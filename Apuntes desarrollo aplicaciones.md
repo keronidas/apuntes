@@ -20,7 +20,7 @@
         - Resumed: Se ejecuta `onResume` al salir del started, en este punto la actividad puede ser pausada o parada.
         - Paused: Llegamos aqui cuando se quita el foco, pj una ventana emergente. Este proceso se llama `onPause`. Desde aqui podriamos volver al estado resumed con `onResume` o podriamos pararla con `onStoped`.
         - Stoped: Aqui llegamos cuando hemos parado la activity, se llega aqui cuando se inicia otra avtividad y esta queda en un segundo plano. Una actividad stoped puede volver a started mediante `onRestart` y `onStart`
-        - Destroyed: Aqui se llega cuando se finaliza la app, se lelga mediante `onDestroy`, se llega desde paused.
+        - Destroyed: Aqui se llega cuando se finaliza la app, se llega mediante `onDestroy`, se llega desde paused.
 
         - ![Alt text](image.png) 
 
@@ -186,21 +186,63 @@
     - R.java
 - ¿Donde podemos encontrar el component tree?
     - En la parte derecha de la interfaz en la vista en modo Design
-    
+
 # Teoria desarrollo
 
 ### Indica cual es el ciclo de vida de una activity en Android y comenta brevemente lo que hace cada paso
+- Created: Nada mas iniciarse se ejecuta el `onCreate`, es obligatorio que sea sobreescrito. 
+- Started: A continuacion del created pasariamos al `onStart`, es cuando la actividad empieza a ser visible en pantalla.
+- Resumed: Se ejecuta `onResume` al salir del started, en este punto la actividad puede ser pausada o parada.
+- Paused: Llegamos aqui cuando se quita el foco, pj una ventana emergente. Este proceso se llama `onPause`. Desde aqui podriamos volver al estado resumed con `onResume` o podriamos pararla con `onStoped`.
+- Stoped: Aqui llegamos cuando hemos parado la activity, se llega aqui cuando se inicia otra avtividad y esta queda en un segundo plano. Una actividad stoped puede volver a started mediante `onRestart` y `onStart`
+- Destroyed: Aqui se llega cuando se finaliza la app, se llega mediante `onDestroy`, se llega desde paused.
 ### ¿Cuales son las ventajas / desventajas de una base de datos SQLite?
+- Tiene las siguientes ventajas:
+    - No necesita configuracion
+    - Tiene un conjunto de librerias escritas en C, no funciona con el modelo cliente-servidor
+    - Solo tiene un archivo
+    - Es de codigo abierto
+    - Android tiene todo lo necesario para crear y ejecutar las bases de datos de este tipo, asi como una api optimizada para ella
+- Como desventajas tenemos:
+    - Funciones reducidas en comparacion a MYSQL o PostgreSQL
+    - Escalabilidad limitada
+    - Carece de caracteristicas de sql avanzadas como right, outer, join...
+    - Bloquea la BBDD en cada escritura
+
 ### En el motor de videojuegos unity, cual es la diferencia entre un método Update, Start y FixedUdate
+- Start: Se llama una sola vez en la vida útil de un script, antes del primer frame. Se utiliza para inicializar variables o estados.
+- Update: Se ejecuta en cada frame y se usa para la mayoría de las actualizaciones de juego, como movimiento de personajes, controles del usuario, etc.
+- FixedUpdate: Se ejecuta de manera regular en intervalos fijos, lo que lo hace ideal para manipular físicas y otros elementos que requieran consistencia independiente de la velocidad del frame.
 ### En el motor de videojuegos unity, para que valen los componentes que se asocian a los gama object. Explica los principales
+- Rigidbody: Añade física a un objeto, como gravedad o colisiones.
+- Collider: Define la forma de un objeto para la detección de colisiones.
+- MeshRenderer y MeshFilter: Renderizan la forma visual del objeto.
+- Scripts personalizados: Permiten definir el comportamiento y la lógica del juego.
 ### Cuando queremos desarrollar aplicaciones móviles, ¿Cuáles son las posibilidades de desarrollo en las diferentes plataformas?
-### En el caso de tener dos ac0vitys en Android y queremos pasar de una a otra. ¿Cuál es el objeto que tenemos que u0lizar? Y en el caso de querer pasar datos, ¿Qué tendríamos que hacer?
-### Cual es la diferencia entre un ListView y un RecyclerView. Explica brevemente como se ges0onan las pulsaciones de un recycler view
+- Android: Desarrollo nativo con Java o Kotlin. Ofrece acceso completo a la funcionalidad del sistema operativo.
+- iOS: Desarrollo nativo con Swift o Objective-C. Esencial para aplicaciones que requieren la última funcionalidad de iOS.
+- Multiplataforma: Herramientas como Flutter, React Native,Ionic, o Xamarin permiten escribir código una vez y desplegarlo en múltiples plataformas. Ideal para aplicaciones que no requieren funcionalidades profundas del sistema operativo.
+### En el caso de tener dos activitys en Android y queremos pasar de una a otra. ¿Cuál es el objeto que tenemos que utilizar? Y en el caso de querer pasar datos, ¿Qué tendríamos que hacer?
+- Utilizar un Intent para iniciar una nueva activity. Para pasar datos, se pueden usar "extras" en el Intent, como intent.putExtra("clave", valor).
+- En la segunda activity, recuperar los datos con getIntent().getExtra("clave").
+### Cual es la diferencia entre un ListView y un RecyclerView. Explica brevemente como se gestionan las pulsaciones de un recycler view
+- ListView: Más simple pero menos eficiente para listas grandes o complejas. No es tan flexible en términos de layout o animaciones.
+- RecyclerView: Más eficiente y versátil. Mejor para manejar grandes conjuntos de datos o para diseños complejos. Las pulsaciones se gestionan a través del adaptador, asignando un OnClickListener a la vista en el método onBindViewHolder
 ### Define como se pueden escuchar pulsaciones sobre un elemento en Android. ¿Y si se quieren asociar el mismo escuchador a varios elementos?
-### En el ciclo de vida de una pantalla, hay un método que se llama onCreate(), el cual 0ene un método llamado setContentView. Indica que hace este método, su importancia y que archivos tiene relacionados
-### Cuando en una pantalla queremos diferenciar lo que se ve cuando el móvil está en horizontal y en ver0cal. ¿Qué es lo que tenemos que hacer? ¿Y si queremos que todos los string de nuestra aplicación estén disponibles en español e inglés?
+- Implementar un View.OnClickListener y asignarlo a los elementos con setOnClickListener. Para múltiples elementos, se puede implementar el escuchador en el activity/fragment y asignarlo a cada elemento, o usar un enfoque similar con una clase interna o lambda.
+### En el ciclo de vida de una pantalla, hay un método que se llama onCreate(), el cual tiene un método llamado setContentView. Indica que hace este método, su importancia y que archivos tiene relacionados
+- setContentView en onCreate() establece el diseño de la interfaz de usuario de la activity, vinculándola con un archivo XML de layout. Es crucial para la configuración inicial de la interfaz de usuario.
+### Cuando en una pantalla queremos diferenciar lo que se ve cuando el móvil está en horizontal y en vertical. ¿Qué es lo que tenemos que hacer? ¿Y si queremos que todos los string de nuestra aplicación estén disponibles en español e inglés?
+- Crear diferentes archivos XML en layout (vertical) y layout-land (horizontal). Para soporte multilingüe, se usan directorios values con locales específicos, como values-es para español, y se definen los strings en archivos XML correspondientes.
 ### Indica la importancia de guardar el estado en una aplicación Android. ¿Cómo se realiza este guardado y recuperación?
-### En kotlin, existe una caracterís0ca llamada Null Safety. Indica que es y como funciona
-### Además de poder u0lizar SQLite o Firebase como base de datos en Android, existe la posibilidad de u0lizar la persistencia DataStore. Explica cuando utilizar cada una de ellas
-### En unity, cuando queremos que varios objetos se comporten de la misma forma y/o tengan las mismas caracterís0cas y elementos, ¿Qué podríamos hacer?
+- Se guarda el estado en onSaveInstanceState y se recupera en onCreate o onRestoreInstanceState, generalmente utilizando un Bundle para pasar datos simples como strings, enteros, etc.
+### En kotlin, existe una característica llamada Null Safety. Indica que es y como funciona
+- Evita errores de NullPointerException. En Kotlin, las variables son no nulas por defecto. Si se necesita una variable nula, se declara con ?. Kotlin proporciona operadores seguros (?.) y el operador Elvis (?:) para trabajar con valores nulos.
+### Además de poder utilizar SQLite o Firebase como base de datos en Android, existe la posibilidad de utilizar la persistencia DataStore. Explica cuando utilizar cada una de ellas
+El data store es una API de Android Studio para guardar de forma asincrona elementos de forma par clave valor dentro de nuestro proyecto. Al ser asincrono se tiene que utilizar mediante el cilo de vida de la app. 
+### En unity, cuando queremos que varios objetos se comporten de la misma forma y/o tengan las mismas características y elementos, ¿Qué podríamos hacer?
+- Utiliza Prefabs en Unity. Creas un objeto de juego con todas las características y comportamientos deseados, y luego lo conviertes en un Prefab. Este Prefab se puede utilizar para crear múltiples instancias del objeto en tu juego, asegurando que todos tengan las mismas propiedades y comportamientos.
 ### Imagina que estamos desarrollando un juego y queremos detectar cuando un nuestro jugador está en el suelo y/o se posa sobre el. ¿Qué tendríamos que hacer?
+- Se pueden usar colisionadores y detectar colisiones mediante métodos como OnCollisionEnter en scripts. También se puede usar raycasting para proyectar un rayo desde el jugador hacia abajo y detectar si choca con el suelo.
+- Usa Physics.Raycast para lanzar el rayo. Si el rayo choca con el suelo dentro de una cierta distancia, entonces el jugador está en el suelo.
+- Este método se ejecuta en el método Update para chequear constantemente si el jugador está en contacto con el suelo.
