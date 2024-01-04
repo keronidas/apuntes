@@ -76,6 +76,68 @@ public class CreateConfigFile {
     }
 }
 ```
+## Ficheros de datos binarios
+
+En los ficheros binarios se utiliza la clase FileInputStream y FileOutputStream
+El condicional se basa en que el dato obtenido tenga un valor de -1, que indica final del fichero
+
+```
+public class FicherosBinariosEscribir {
+	public static void main(String[] args) throws
+    IOException{
+        File fichero = new
+    File("X:\\workspace\\FicherosBinariosEscribir\\src\\FicheroP
+    rueba.dat");
+        FileOutputStream salida = new
+    FileOutputStream(fichero, true);
+        FileInputStream entrada = new
+    FileInputStream(fichero);
+        int i;
+    
+        for (i = 0; i < 101; i++)  
+        salida.write(i);
+        salida.close();
+    
+        while ((i=entrada.read()) != ‐1)  
+        System.out.println(i);
+        entrada.close();
+        
+    }
+}
+```
+## Ficheros de datos o .dat
+
+En este tipo de ficheros hay que hacer los siguientes pasos:
+1. Crear el objeto `File`
+2. Crear el objeto `FileInputStream / FileOutputStream`
+3. Crear el objeto `DataInputStream / DataOutputStream`
+4. Aqui el condicional es un `while(true)`
+
+```
+public static void main(String[] args) throws
+IOException{
+    File fichero = new
+File("X:\\workspace\\FicherosBinariosEscribir\\src\\FicheroArrays.dat");
+    FileInputStream entrada = new FileInputStream(fichero);
+    DataInputStream entradadatos = new DataInputStream(entrada);
+   
+    String marca;
+    int anio;
+    try {
+    while (true) {
+     marca = entradadatos.readUTF();
+     anio =entradadatos.readInt();
+     System.out.println("Marca: " + marca + " anio: " + anio);
+     
+    }
+    } catch (EOFException e) {
+    entradadatos.close();
+    }
+}
+
+```
+
+
 
 ## Documentos XML
 
