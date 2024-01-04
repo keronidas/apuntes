@@ -108,7 +108,36 @@
         - Carece de caracteristicas de sql avanzadas como right, outer, join...
         - Bloquea la BBDD en cada escritura
 
+- # Fases de un videojuego
+    - Inicio del motor
+    - Carga de recursos
+    - Inicio del juego
+    - Bucle principal
+    - Entrada
+    - Logica
+    - Renderizado
 
+    El bucle se mantiene entre el renderizado y la entrada por parte del usuario
+
+- # Bloques funcionales de un videojuego
+    - ### Motor de fisicas
+        - Simulacion dinamica, aplica las leyes de la fisica
+        - Modulo de colisiones, evita las colisiones
+            - Detecta colisiones mediante boolean
+            - Determina la colision, calculando el punto de interseccion
+            - Calcula la respuesta de la colision
+        ##### Aqui se implementa la interfaz ApplicationListener, y sus metodos son:
+        - create, cuando el juego es creado
+        - dispose, cuando el juego se destruye
+        - pause, cuando se pausa el juego
+        - render, cuando el juego se renderiza
+        - resume, cuando el juego se inicia despues de una pausa
+    - ### Motor de renderizado
+         Es un framework encargado de dibujar los graficos, hay dos librerias principales
+        - Vulkan, api de bajo nivel para graficos 3D
+        - OpenGl
+    - ### Motor de inteligencia artificial
+    - ### Motor de sonido
 
 
 # Preguntas test
@@ -186,6 +215,47 @@
     - R.java
 - ¿Donde podemos encontrar el component tree?
     - En la parte derecha de la interfaz en la vista en modo Design
+
+## Tema 3
+## Tema 4
+- En un proyecto LibGDX los recursos como imágenes, sonido se almacenan en:
+    - Carpeta assets
+- Las colisiones se implementan:
+    - Por cada objeto que colisiona en el juego se debe crear un Body
+- La clase AndroidLauncher de la librería LibGDX
+    - Inicia el contexto gráfico
+    - Implementa la interfaz AndroidApplication
+    - Contiene el método onCreate
+- Cuál de estos métodos no son de la interfaz ContactListener
+    - setContactListener
+- Si un Body es de tipo dinámico, se declara
+    - BodyDef.BodyType.DynamicBody
+- Del motor de físicas podemos decir:
+    - Es un framework
+    - Contiene un módulo para la detección de colisiones
+    - Simula las propiedades físicas de los cuerpos
+- Un sprite es:
+    - Una imagen con más información como posición y velocidad
+- isTouched es:
+    - Un método de la clase Gdx.Input que se lanza cuando se pulsa sobre la pantalla
+- Los algorimos de inteligencia artificial más usados para juegos son:
+    - SSS
+    - A*
+    - MiniMax
+- Los motores de sonido usan ficheros con formato
+    - Pueden usar Mp3, WaV y OGG
+- Todas las instrucciones usadas para dibujar en un juego debe estar:
+    - Dentro del método render entre batch.begin y el método batch.end
+- Las librerias para el desarrolo de juegos mas usadas son:
+    - Allegro, Phase, Ccocos2D
+- isKeyPressed podemos afirmar:
+    - Un método de la clase Gdx.Input que se lanza cuando se presiona una tecla
+- La fase de un juego encargada de ejecutar el propio juego se llama:
+    - Bucle principal
+- Cuál es la afirmación correcta:
+    - Las texturas se implementan con la clase com.badlogic.gdx.graphics.Texture
+
+## Tema 5
 
 # Teoria desarrollo
 
