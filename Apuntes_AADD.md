@@ -136,8 +136,28 @@ File("X:\\workspace\\FicherosBinariosEscribir\\src\\FicheroArrays.dat");
 }
 
 ```
+## Ficheros con clase Object
 
+En este tipo de ficheros necesitamos hacer los siguientes pasos:
+1. Crear el objeto `File`
+2. Crear el objeto `FileInputStream / FileOutputStream`
+3. Crear el objeto `ObjectInputStream / ObjectOutputStream`
+4. Si queremos leer los datos lo hacemos con un `while(true)`
 
+```
+File fichero = new File("libro.dat");
+FileOutputStream flujo = new FileOutputStream(fichero);
+ObjectOutputStream objeto = new ObjectOutputStream(flujo);
+
+//Creamos varios objetos
+Libro l1= new Libro("Perro",2);
+
+//Guardamos los datos
+objeto.writeObject(l1);
+
+lectura= (Libro) objetoEntrada.readObject()
+
+```
 
 ## Documentos XML
 
@@ -153,20 +173,48 @@ Pasos en un fichero xml
 Dado el XML
 
 ```
-<?xml version="1.0" encoding="UTF-8"?>
-<empleados>
-    <empleado>
-        <nombre>Juan Pérez</nombre>
-        <departamento>Recursos Humanos</departamento>
-        <email>juan.perez@example.com</email>
-    </empleado>
-    <empleado>
-        <nombre>Ana López</nombre>
-        <departamento>Finanzas</departamento>
-        <email>ana.lopez@example.com</email>
-    </empleado>
-    <!-- Más empleados aquí -->
-</empleados>
+<camaras_web>
+    <camara id="1">
+        <modelo>CÁMARA WEB EMPRESARIAL BRIO ULTRA HD PRO</modelo>
+        <marca>Logitech</marca>
+        <altura>27 mm </altura>
+        <anchura>102 mm</anchura>
+        <profundidad>27 mm</profundidad>
+        <peso>63 g</peso>
+        <megapixeles>13</megapixeles>
+        <comentarios>RightLight 3 con HDR para ofrecer imágenes nítidas en diversas condiciones de iluminación, desde luz escasa a luz solar directa </comentarios>
+    </camara>
+    <camara id="2">
+        <modelo>CÁMARA WEB HD PRO C920s</modelo>
+        <marca>Logitech</marca>
+        <altura>43,3 mm</altura>
+        <anchura>94 mm</anchura>
+        <profundidad>71 mm</profundidad>
+        <peso>162 g</peso>
+        <megapixeles>3</megapixeles>
+        <comentarios>Clip universal acoplable a trípode, para monitores, pantallas LCD o portátiles </comentarios>
+    </camara>
+    <camara id="3">
+        <modelo>STREAMCAM</modelo>
+        <marca>Logitech</marca>
+        <altura>66 mm </altura>
+        <anchura>58 mm </anchura>
+        <profundidad>48 mm </profundidad>
+        <peso>222 g</peso>
+        <megapixeles>-</megapixeles>
+        <comentarios>Dos micrófonos omnidireccionales con filtro de reducción de ruido </comentarios>
+    </camara>
+    <camara id="4">
+        <modelo>4K PRO MAGNETIC WEBCAM</modelo>
+        <marca>Logitech</marca>
+        <altura>3,5 cm </altura>
+        <anchura>10,1 cm </anchura>
+        <profundidad>2,7 cm </profundidad>
+        <peso>90,2 g </peso>
+        <megapixeles>-</megapixeles>
+        <comentarios> RightLight 3 con HDR para ofrecer imágenes nítidas en diversas condiciones de iluminación, desde luz escasa a luz solar directa. Controles de imagen con la aplicación Camera Settings opcional, para funciones de panorámica, inclinación y zoom. Dos micrófonos omnidireccionales integrados con cancelación de eco y supresión de ruido </comentarios>
+    </camara>
+</camaras_web>
 ```
 
 Tenemos que hacer 
@@ -213,3 +261,150 @@ public class ReadXMLFile {
 	}
 }
 ```
+
+## Conexion BBDD
+```
+public static void main(String [] args){
+    Connection miCon = DriverManager.getConnection("localhost","user","pass");
+    String sentencia = "Select * from empleados";
+    PreparedStatement sentenciaP = conexion.prepareStatement(sentencia);
+    ResultSet rs = sentenciaP.executeQuery();
+
+    //Para leer
+    while(rs.next()){
+        String dato1 = rs.getString(1);
+        String dato2 = rs.getString(2);
+    }
+
+    //Para escribir
+        rs.setString(1,"valor");
+        int filasModificadas = rs.executeUpdate();
+        System.out.println("hemos modificado" + filasModificadas);
+}
+```
+
+
+
+
+## Hibernate
+
+### Leer datos
+```
+public static void main(String [] args){
+    SessionFactory sesion = HibernateUtil.getSessionFactory();
+    Session session = sesion.openSession();
+    try{
+        Query q =session.createSession("from departamentos");
+    }
+ }
+```
+
+Ahora tenemos dos opciones
+1. Crear una lista y luego un iterador
+```
+List <Empleados> list = q.list();
+Iterator <Empleados> iter = list.iterator();
+```
+2. Crear el iterador directamente
+```
+Iterator iter = q.iterate();
+```
+El bucle seria siempre igual para la 1 y 2
+```
+while (iter.hasNext()){
+    Empleados emp = (Empleados) iter.next();
+    //Imprimimos lo que haga falta del objeto
+}
+```
+3. Si extraemos con una consulta preparada lo guardamos en un array de objetos
+La consulta puede ser:
+`from Empleados e, departamentos d where " e.departamentos=d.numeroDepartamento order by Apellido"`
+```
+while(iter.hasNext()){
+    Object[] obj =(Object[]) iter.next();
+    Empleados emp = (Empleados) obj[0];
+    Departamentos dep = (Departamentos) obj[1];
+}
+```
+
+### Insertar datos
+```
+public static void main(String [] args){
+    SessionFactory sesion = HibernateUtil.getSessionFactory();
+    Session session = sesion.openSession();
+    Transaction tx = session.beginTransaction();
+
+    //Creamos el objeto
+
+    Empleados miEmp = new Empleados("Paco",54);
+
+    try{
+        //Guardamos y hacemos commit
+        session.save(miEmp);
+        try{
+            tx.commit();
+        } catch(IOException e){
+
+        }
+    }catch(IOException e){
+
+    }
+
+
+ }
+```
+### Update y Delete son iguales
+
+```
+    SessionFactory sesion = HibernateUtil.getSessionFactory();
+    Session session = sesion.openSession();
+    Transaction tx = session.beginTransaction();
+
+    String hqlActua="";
+    Query q = session.createQuery(hqlActua);
+
+    int filas = q.executeUpdate();
+    //Imprimimos el numero de filas
+    System.out.println("Se ha modificado" + filas)
+    tx.commit();
+```
+## BBDDXML
+
+
+Importante aprender
+
+```
+String codigo = "/universidad/departamento/codigo[.='IFC1']/../empleado/nombre/text()";
+ResourceSet result = servicio.query(codigo);
+ResourceIterator i = result.getIterator();
+
+
+while(i.hasMoreResources()){
+    Resource r = i.nextResource();
+    String s =r.getContent().toString();
+    //Parseo
+    System.out.println(r.getContent());
+}
+```
+
+
+# TEST
+
+- ¿Qué son las operaciones altas?
+    - Son las responsables de adiciones de un nuevo registro en el fichero con el que trabajamos.
+- ¿Qué permite hacer el método isDirectory()?
+    - Este método devuelve true si el objeto File corresponde a un directorio.
+- ¿Cuál de estos métodos permite crear un array de strings con los nombres de ficheros y directorios asociados al objeto File?
+    - list()
+- ¿Qué hace el método int read() de la clase FileReader?
+    - Lee un carácter y lo devuelve
+- ¿Cuál es la operación encargada de buscar un fichero con unos datos determinados?
+    - Una consulta
+- Las clases FileInputStream y FileOutputStream sirven para..
+    - Para el acceso a fichero binarios en Java
+- Que es un stream
+    - Un flujo de comunicación entre una fuente y un destino.
+- ¿Qué hace un try/catch?
+    - Ejecutar línea por línea el código, y si ocurre una excepción, tratarla.
+- ¿Qué dos clases de acceso a un fichero existen?
+    - Acceso secuencial y acceso directo o aleatorio.
