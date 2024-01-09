@@ -408,3 +408,14 @@ while(i.hasMoreResources()){
     - Ejecutar línea por línea el código, y si ocurre una excepción, tratarla.
 - ¿Qué dos clases de acceso a un fichero existen?
     - Acceso secuencial y acceso directo o aleatorio.
+
+
+
+
+Ficheros config
+Binarios puros
+CRUD JDBC
+CRUD Hibernate
+
+Cuando pides datos al user prepared
+
