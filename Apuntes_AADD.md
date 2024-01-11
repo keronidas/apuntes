@@ -1,5 +1,19 @@
 # Manejo de ficheros
 
+
+# TEMARIO
+
+1. Ficheros Caracteres/texto
+2. Ficheros configuracion 
+3. Ficheros binario
+4. Ficheros .dat
+5. Ficheros clase Object
+6. Documentos XML
+7. Conexion BBDD
+8. Hibernate
+9. MongoDB
+10. 
+
 ##  Ficheros de caracteres/texto
 
 Si usamos el metodo buffered necesitamos tener el siguiente orden:
@@ -94,9 +108,6 @@ public class FicherosBinariosEscribir {
     FileInputStream(fichero);
         int i;
     
-        for (i = 0; i < 101; i++)  
-        salida.write(i);
-        salida.close();
     
         while ((i=entrada.read()) != ‐1)  
         System.out.println(i);
@@ -264,22 +275,69 @@ public class ReadXMLFile {
 
 ## Conexion BBDD
 ```
-public static void main(String [] args){
-    Connection miCon = DriverManager.getConnection("localhost","user","pass");
-    String sentencia = "Select * from empleados";
-    PreparedStatement sentenciaP = conexion.prepareStatement(sentencia);
-    ResultSet rs = sentenciaP.executeQuery();
+public class EjemploCRUD {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/tu_base_de_datos";
+        String user = "usuario";
+        String password = "contraseña";
 
-    //Para leer
-    while(rs.next()){
-        String dato1 = rs.getString(1);
-        String dato2 = rs.getString(2);
+        try {
+            Connection con = DriverManager.getConnection(url, user, password);
+
+            // CREATE
+            createEmpleado(con, 1, "Paco");
+
+            // READ
+            readEmpleados(con);
+
+            // UPDATE
+            updateEmpleado(con, 1, "Francisco");
+
+            // DELETE
+            deleteEmpleado(con, 1);
+
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    //Para escribir
-        rs.setString(1,"valor");
-        int filasModificadas = rs.executeUpdate();
-        System.out.println("hemos modificado" + filasModificadas);
+    // Métodos CRUD
+    private static void createEmpleado(Connection con, int id, String nombre) throws SQLException {
+        String sql = "INSERT INTO empleados (id, nombre) VALUES (?, ?)";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.setString(2, nombre);
+            pstmt.executeUpdate();
+        }
+    }
+
+    private static void readEmpleados(Connection con) throws SQLException {
+        String sql = "SELECT * FROM empleados";
+        try (PreparedStatement pstmt = con.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                System.out.println("ID: " + rs.getInt("id") + ", Nombre: " + rs.getString("nombre"));
+            }
+        }
+    }
+
+    private static void updateEmpleado(Connection con, int id, String nuevoNombre) throws SQLException {
+        String sql = "UPDATE empleados SET nombre = ? WHERE id = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, nuevoNombre);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        }
+    }
+
+    private static void deleteEmpleado(Connection con, int id) throws SQLException {
+        String sql = "DELETE FROM empleados WHERE id = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        }
+    }
 }
 ```
 
@@ -353,20 +411,24 @@ public static void main(String [] args){
 
  }
 ```
-### Update y Delete son iguales
+### Update
 
 ```
     SessionFactory sesion = HibernateUtil.getSessionFactory();
     Session session = sesion.openSession();
     Transaction tx = session.beginTransaction();
-
-    String hqlActua="";
-    Query q = session.createQuery(hqlActua);
-
-    int filas = q.executeUpdate();
-    //Imprimimos el numero de filas
-    System.out.println("Se ha modificado" + filas)
+    Cliente miCliente=session.get(Clientes.class,1);
+    miCliente.setName("Pedro");
     tx.commit();
+    session.close();
+```
+    SessionFactory sesion = HibernateUtil.getSessionFactory();
+    Session session = sesion.openSession();
+    Transaction tx = session.beginTransaction();
+
+### Delete
+```
+
 ```
 ## BBDDXML
 
@@ -388,6 +450,66 @@ while(i.hasMoreResources()){
 ```
 
 
+## MongoDB
+
+Comandos con MongoDB
+- Listar bases de datos -> `show databases`
+- Mostrar la base de datos actual -> `db`
+- Mostrar colecciones de la base de datos actual -> `show collections`
+- Usar una base de datos -> `use database`
+- Para usar count debemos hacer `db.nombre_coleccion.count()`, tambien sirve para `.save` y `.insert`
+```
+use mibasededatos
+Amigo1={nombre:'Ana',edad:23};
+db.amigos.save(Amigo1);
+```
+- Para consultar registros usamos `.find`
+```
+use mibasededatos
+db.amigos.find()
+
+//Ordenados por nombre
+db.amigos.find().sort({nombre:1})
+db.amigos.find().sort({nombre:-1})
+```
+
+### El mongo id esta basado en 12 bytes
+
+- Los 4 primeros son `marca de tiempo`
+- Los 3 siguientes son `identificacion equipo`
+- Los 2 siguientes `identificador proceso`
+- Los 3 ultimos `numero aleatorio`
+
+Para conectarse en JAVA
+
+```
+MongoClient cliente =new MongoClient();
+MongoClient db = cliente.getDatabase("mibasededatos);
+MongoCollection<Document> coleccion = db.getCollection("amigos");
+
+//Para buscar
+List <Document> consulta = coleccion.find().into(new ArrayList <Document>());
+
+for (int i=0;i<consulta.size();i++){
+    System.out.println("",consulta.get(i).toString());
+    Document amig = consulta.get(i);
+    amig.getString(nombre)
+    amig.getString(curso)
+    amig.getString(edad)
+}
+
+
+```
+
+Otra clase seria 
+```
+MongoCursor<Document> cursor = coleccion.find().iterator();
+
+while (cursor.hasNext()){
+    Document doc = cursor.next()
+
+}
+```
 # TEST
 
 - ¿Qué son las operaciones altas?
